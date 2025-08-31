@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Bunga Cinta... atau?</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fff0f5;
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    h1 {
+      color: #ff69b4;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 1em 2em;
+      font-size: 1.5em;
+      background-color: #ffb6c1;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .bunga {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-image: url('https://www.gambaranimasi.org/data/media/348/animasi-bergerak-bunga-mawar-0007.gif');
+      background-size: cover;
+      background-repeat: no-repeat;
+      animation: mekarku 0.6s ease-out forwards;
+    }
+
+    @keyframes mekarku {
+      0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1.2) rotate(360deg);
+        opacity: 1;
+      }
+    }
+
+    #jumpscare {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #jumpscare img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 Selamat Datang di Dunia Cinta 💖</h1>
+  <button onclick="triggerBunga()">Klik untuk Cinta...</button>
+
+  <div id="jumpscare">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY08n4emzdxnuOttVPxLfZ4KDPASIYTm3LEw&s" alt="Jumpscare">
+    <audio id="scream" src="jumpscare-94984.mp3"></audio>
+  </div>
+
+  <script>
+    function triggerBunga() {
+      document.querySelector('h1').style.display = 'none';
+      document.querySelector('button').style.display = 'none';
+
+      // HATI: koordinat pola hati (0-1 normalisasi)
+      const heartCoords = [];
+      for (let t = 0; t < Math.PI * 2; t += 0.1) {
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+        heartCoords.push({ x, y });
+      }
+
+      // Pusat layar
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      // Skala agar bentuk love fit layar
+      const scale = Math.min(window.innerWidth, window.innerHeight) / 40;
+
+      // Buat bunga berdasarkan koordinat
+      heartCoords.forEach(coord => {
+        const bunga = document.createElement('div');
+        bunga.className = 'bunga';
+        bunga.style.left = `${centerX + coord.x * scale}px`;
+        bunga.style.top = `${centerY - coord.y * scale}px`;
+        document.body.appendChild(bunga);
+      });
+
+      // Setelah 3 detik, tampilkan jumpscare
+      setTimeout(() => {
+        document.getElementById('jumpscare').style.display = 'flex';
+        const audio = document.getElementById('scream');
+        audio.play().catch(err => console.warn('Autoplay gagal:', err));
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
